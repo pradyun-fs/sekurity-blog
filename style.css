@@ -1,0 +1,89 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+/* Header Styles */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #333;
+    color: white;
+    padding: 15px 30px;
+}
+
+.logo-text {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.logo-text span {
+    color: #f39c12;
+}
+
+/* Navigation Styles */
+.nav {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+}
+
+.nav li {
+    position: relative;
+    margin: 0 15px;
+}
+
+.nav a {
+    text-decoration: none;
+    color: white;
+    font-size: 18px;
+    padding: 10px;
+    transition: 0.3s;
+}
+
+.nav a:hover {
+    background-color: #f39c12;
+    border-radius: 5px;
+}
+
+/* Dropdown Menu */
+.nav li ul {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: #444;
+    list-style: none;
+    padding: 10px 0;
+    border-radius: 5px;
+    min-width: 150px;
+}
+
+.nav li:hover ul {
+    display: block;
+}
+
+.nav li ul li {
+    padding: 10px;
+}
+
+.nav li ul li a {
+    display: block;
+    padding: 10px;
+    color: white;
+    transition: 0.3s;
+}
+
+.nav li ul li a:hover {
+    background-color: #f39c12;
+}
+
+/* Logout Button */
+.logout {
+    color: red;
+}
