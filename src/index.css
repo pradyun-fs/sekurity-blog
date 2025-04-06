@@ -83,21 +83,17 @@ body {
   margin-bottom: 1rem;
   height: auto;
 }
-
-/* 🖋 Floating image + caption styling */
 figure[data-type="floatingImage"] {
-  display: inline-block;
-  max-width: 100%;
   margin: 1rem auto;
   text-align: center;
   position: relative;
 }
 figure[data-type="floatingImage"] figcaption {
   font-size: 0.875rem;
-  color: #94a3b8;
+  color: #6b7280;
   margin-top: 0.5rem;
-  font-style: italic;
 }
+
 
 /* 🔘 Buttons */
 button {
@@ -119,7 +115,6 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-/* 👤 Profile edit styles */
 .update-profile-section * {
   color: #22d3ee !important;
 }

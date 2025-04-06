@@ -1,63 +1,76 @@
-import { NodeViewWrapper, NodeViewContent } from "@tiptap/react";
+import { NodeViewWrapper } from "@tiptap/react";
 import { useRef, useEffect, useState } from "react";
 import Moveable from "react-moveable";
 
 export default function FloatingImageComponent({ node, updateAttributes, selected }) {
-  const { src, width = 300, height = 200 } = node.attrs;
-  const wrapperRef = useRef(null);
-  const [frame, setFrame] = useState({ width, height });
+  const { src, width, height, x, y, caption } = node.attrs;
+  const targetRef = useRef(null);
+  const [frame, setFrame] = useState({
+    translate: [x, y],
+    width,
+    height,
+  });
 
   useEffect(() => {
     updateAttributes({
+      x: frame.translate[0],
+      y: frame.translate[1],
       width: frame.width,
       height: frame.height,
     });
   }, [frame]);
 
   return (
-    <NodeViewWrapper
-      as="figure"
-      ref={wrapperRef}
-      data-type="floatingImage"
-      className="mx-auto my-4 text-center"
-      style={{
-        width: `${frame.width}px`,
-        height: `${frame.height + 40}px`, // height + space for caption
-        border: selected ? "2px solid #22d3ee" : "none",
-      }}
-    >
-      <img
-        src={src}
-        alt="Floating"
+    <NodeViewWrapper className="floating-image-wrapper">
+      <div
+        ref={targetRef}
         style={{
-          width: "100%",
+          transform: `translate(${frame.translate[0]}px, ${frame.translate[1]}px)`,
+          width: `${frame.width}px`,
           height: `${frame.height}px`,
-          objectFit: "cover",
-          display: "block",
-          margin: "0 auto",
+          position: "relative",
+          border: selected ? "2px solid #22d3ee" : "none",
         }}
-        draggable={false}
-      />
-
-      {/* Caption - TipTap manages content here */}
-      <figcaption className="text-sm text-gray-500 mt-2">
-        <NodeViewContent as="p" className="outline-none" />
-      </figcaption>
+      >
+        <img
+          src={src}
+          alt="floating"
+          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+          draggable={false}
+        />
+        <figcaption
+          contentEditable
+          suppressContentEditableWarning
+          onBlur={(e) => updateAttributes({ caption: e.target.innerText.trim() })}
+          className="text-xs text-gray-500 text-center mt-1"
+        >
+          {caption || "Write a caption..."}
+        </figcaption>
+      </div>
 
       {selected && (
         <Moveable
-          target={wrapperRef.current}
-          resizable
+          target={targetRef.current}
           draggable
-          keepRatio={false}
-          throttleResize={1}
+          resizable
           throttleDrag={1}
-          onResize={({ width, height }) => {
-            setFrame({ width, height });
+          throttleResize={1}
+          keepRatio={false}
+          onDrag={({ beforeTranslate }) => {
+            setFrame((prev) => ({
+              ...prev,
+              translate: beforeTranslate,
+            }));
           }}
-          onDrag={({ target, beforeTranslate }) => {
-            target.style.transform = `translate(${beforeTranslate[0]}px, ${beforeTranslate[1]}px)`;
+          onResize={({ width, height, drag }) => {
+            const [x, y] = drag.beforeTranslate;
+            setFrame({
+              width,
+              height,
+              translate: [x, y],
+            });
           }}
+          bounds={{ left: 0, top: 0 }}
         />
       )}
     </NodeViewWrapper>

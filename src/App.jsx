@@ -1,16 +1,21 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useAuth } from "./context/AuthContext";
 import { signOut } from "firebase/auth";
 import { auth } from "./firebase-config";
 import { useState } from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+} from "react-router-dom";
 
+import Layout from "./components/Layout";
 import BlogEditor from "./components/BlogEditor";
+import AdminDashboard from "./pages/AdminDashboard";
 import BlogReader from "./pages/BlogReader";
 import BlogDetail from "./pages/BlogDetail";
 import AuthorProfile from "./pages/AuthorProfile";
 import EditProfile from "./pages/EditProfile";
-import AdminDashboard from "./pages/AdminDashboard";
-import Layout from "./components/Layout";
+import EditBlog from "./pages/EditBlog"; 
 import Home from "./pages/Home";
 
 function App() {
@@ -43,50 +48,13 @@ function App() {
             </Layout>
           }
         />
-        <Route
-          path="/write"
-          element={
-            <Layout>
-              <BlogEditor />
-            </Layout>
-          }
-        />
-        <Route
-          path="/read"
-          element={
-            <Layout>
-              <BlogReader />
-            </Layout>
-          }
-        />
-        <Route
-          path="/admin"
-          element={
-            <Layout>
-              <AdminDashboard />
-            </Layout>
-          }
-        />
-        <Route
-          path="/profile/edit"
-          element={
-            <Layout>
-              <EditProfile />
-            </Layout>
-          }
-        />
-        <Route
-          path="/blog/:id"
-          element={<BlogDetail />}
-        />
-        <Route
-          path="/author/:email"
-          element={
-            <Layout>
-              <AuthorProfile />
-            </Layout>
-          }
-        />
+        <Route path="/blog/:id" element={<Layout><BlogDetail /></Layout>} />
+        <Route path="/author/:email" element={<Layout><AuthorProfile /></Layout>} />
+        <Route path="/profile/edit" element={<Layout><EditProfile /></Layout>} />
+        <Route path="/write" element={<Layout><BlogEditor /></Layout>} />
+        <Route path="/read" element={<Layout><BlogReader /></Layout>} />
+        <Route path="/admin" element={<Layout>{isAdmin ? <AdminDashboard /> : <p>Not authorized</p>}</Layout>} />
+        <Route path="/edit-blog/:id" element={<Layout><EditBlog /></Layout>} /> 
       </Routes>
     </Router>
   );

@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import { db } from "../firebase-config";
 import { collection, query, where, getDocs, orderBy } from "firebase/firestore";
 import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 function BlogReader() {
   const [blogs, setBlogs] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const { user } = useAuth(); // ✅ Moved inside the component
 
   useEffect(() => {
     const fetchApprovedBlogs = async () => {
@@ -13,7 +15,7 @@ function BlogReader() {
         const q = query(
           collection(db, "blogs"),
           where("status", "==", "approved"),
-          orderBy("createdAt", "desc") // Remove if no index
+          orderBy("createdAt", "desc")
         );
 
         const querySnapshot = await getDocs(q);
@@ -38,7 +40,9 @@ function BlogReader() {
   return (
     <div className="min-h-screen bg-zinc-950 text-white px-6 py-10">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-4xl font-extrabold mb-6 text-emerald-400 text-center">📚 Explore Blogs</h1>
+        <h1 className="text-4xl font-extrabold mb-6 text-emerald-400 text-center">
+          📚 Explore Blogs
+        </h1>
 
         <div className="max-w-md mx-auto mb-8">
           <input
@@ -76,12 +80,23 @@ function BlogReader() {
                   }}
                 />
 
-                <Link
-                  to={`/blog/${blog.id}`}
-                  className="text-emerald-600 mt-4 inline-block hover:underline"
-                >
-                  Read Full Blog →
-                </Link>
+                <div className="flex items-center justify-between mt-4">
+                  <Link
+                    to={`/blog/${blog.id}`}
+                    className="text-emerald-600 hover:underline"
+                  >
+                    Read Full Blog →
+                  </Link>
+
+                  {user?.email === blog.authorEmail && (
+                    <Link
+                      to={`/edit-blog/${blog.id}`}
+                      className="text-blue-600 hover:underline ml-4"
+                    >
+                      ✏️ Edit
+                    </Link>
+                  )}
+                </div>
               </div>
             ))}
           </div>
