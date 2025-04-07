@@ -7,7 +7,7 @@ import { useAuth } from "../context/AuthContext";
 function BlogReader() {
   const [blogs, setBlogs] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const { user } = useAuth(); // ✅ Moved inside the component
+  const { user } = useAuth(); 
 
   useEffect(() => {
     const fetchApprovedBlogs = async () => {

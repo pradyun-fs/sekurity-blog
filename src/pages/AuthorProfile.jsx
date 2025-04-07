@@ -17,13 +17,13 @@ function AuthorProfile() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!email) return; // 🚫 avoid running if email is undefined
+    if (!email) return; 
 
     const fetchData = async () => {
       try {
         console.log("Author email from route:", email);
 
-        // 🔍 Get user by email
+        // Get user by email
         const userQuery = query(collection(db, "users"), where("email", "==", email));
         const userSnapshot = await getDocs(userQuery);
 
@@ -34,7 +34,7 @@ function AuthorProfile() {
           setUserInfo(null);
         }
 
-        // 📝 Get blogs by author
+        //  Get blogs by author
         const blogQuery = query(
           collection(db, "blogs"),
           where("authorEmail", "==", email),
