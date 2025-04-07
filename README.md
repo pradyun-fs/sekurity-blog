@@ -44,7 +44,7 @@ Welcome to **Phish&Chips**, where code meets creativity and blogs taste better w
 
 ```bash
 # Clone the repo
-git clone https://github.com/yourusername/phish-and-chips.git
+git clone https://github.com/pradyun-fs/sekurity-blog.git
 
 # Navigate to the folder
 cd phish-and-chips
