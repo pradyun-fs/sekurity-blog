@@ -24,7 +24,8 @@
     "react-hot-toast": "^2.5.2",
     "react-icons": "^5.5.0",
     "react-moveable": "^0.56.0",
-    "react-router-dom": "^7.4.1"
+    "react-router-dom": "^7.4.1",
+    "selenium-webdriver": "^4.31.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",

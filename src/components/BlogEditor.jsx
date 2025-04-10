@@ -23,12 +23,12 @@ function BlogEditor() {
       StarterKit.configure({
         bold: false, // disable built-in bold
       }),
-      Bold, // custom bold
+      Bold,
       Underline,
       Link.configure({ autolink: true, openOnClick: true, linkOnPaste: true }),
       FloatingImage,
     ],
-    content: "<p>Start writing your blog...</p>",
+    content: "<p></p>",
   });
 
   useEffect(() => {
@@ -40,29 +40,48 @@ function BlogEditor() {
   }, [editor, imgbbApiKey]);
 
   const handleSubmit = async () => {
-    if (!editor || !user) return;
+    if (!editor || !user) {
+      console.warn("❌ Submit blocked: editor or user not available");
+      return;
+    }
+
     const html = editor.getHTML().trim();
     const name = user.displayName || "Anonymous";
 
-    if (!title.trim()) return toast.error("Enter a blog title.");
-    if (!html || html === "<p></p>") return toast.error("Write some content.");
+    console.log("🧠 Submitting as user:", user?.email);
+
+    if (!title.trim()) {
+      toast.error("Enter a blog title.");
+      return;
+    }
+
+    if (!html || html === "<p></p>") {
+      toast.error("Write some content.");
+      return;
+    }
 
     try {
-      await addDoc(collection(db, "blogs"), {
+      const blogData = {
         title: title.trim(),
         content: html,
         author: name,
         authorEmail: user.email,
         createdAt: serverTimestamp(),
         status: "pending",
-      });
+      };
+
+      console.log("📤 Submitting blog to Firestore:", blogData);
+
+      await addDoc(collection(db, "blogs"), blogData);
 
       toast.success("✅ Blog submitted for admin review!");
       setSubmitted(true);
       setTitle("");
       editor.commands.clearContent();
+
+      console.log("✅ Blog submitted successfully. Still logged in as:", user?.email);
     } catch (err) {
-      console.error("Error submitting blog:", err);
+      console.error("❌ Error submitting blog:", err);
       toast.error("Error submitting blog.");
     }
   };
