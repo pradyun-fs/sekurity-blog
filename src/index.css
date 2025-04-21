@@ -84,14 +84,16 @@ body {
   height: auto;
 }
 figure[data-type="floatingImage"] {
-  margin: 1rem auto;
+  margin: 1.5rem auto;
   text-align: center;
-  position: relative;
+  max-width: 100%;
+  display: block;
 }
 figure[data-type="floatingImage"] figcaption {
   font-size: 0.875rem;
   color: #6b7280;
   margin-top: 0.5rem;
+  text-align: center;
 }
 
 
@@ -120,4 +122,10 @@ button:focus-visible {
 .update-profile-section input,
 .update-profile-section textarea {
   color: black !important;
+}
+figure[data-type="floatingImage"] img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  display: inline-block;
 }

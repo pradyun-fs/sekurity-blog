@@ -3,23 +3,43 @@ import { useEffect, useState } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase-config";
 import { useAuth } from "../context/AuthContext";
+import "../components/editorStyles.css";
 
 function BlogDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
   const [blog, setBlog] = useState(null);
+  const [redirect, setRedirect] = useState(false);
 
   useEffect(() => {
     const fetchBlog = async () => {
-      const docRef = doc(db, "blogs", id);
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        setBlog({ id: docSnap.id, ...docSnap.data() });
+      try {
+        const docRef = doc(db, "blogs", id);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          setBlog({ id: docSnap.id, ...docSnap.data() });
+        } else {
+          // Blog not found
+          setRedirect(true);
+        }
+      } catch (err) {
+        console.error("Failed to fetch blog:", err);
+        setRedirect(true);
       }
     };
+
     fetchBlog();
   }, [id]);
+
+  // ✅ Safe redirection without triggering flushSync warning
+  useEffect(() => {
+    if (redirect) {
+      Promise.resolve().then(() => {
+        navigate("/");
+      });
+    }
+  }, [redirect, navigate]);
 
   if (!blog) {
     return <div className="text-white text-center py-20">Loading...</div>;
@@ -34,8 +54,9 @@ function BlogDetail() {
         <p className="text-sm text-gray-600 mb-4">
           By {blog.author} ({blog.authorEmail})
         </p>
+
         <div
-          className="prose max-w-none"
+          className="ProseMirror prose max-w-none"
           dangerouslySetInnerHTML={{ __html: blog.content }}
         />
 

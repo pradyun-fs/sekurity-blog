@@ -7,14 +7,10 @@ import Link from "@tiptap/extension-link";
 import { FloatingImage } from "../extensions/FloatingImage";
 import { handleImagePaste } from "../utils/handleImagePaste";
 import { db } from "../firebase-config";
-import {
-  doc,
-  getDoc,
-  updateDoc,
-  serverTimestamp,
-} from "firebase/firestore";
+import { doc, getDoc, updateDoc, serverTimestamp } from "firebase/firestore";
 import { useAuth } from "../context/AuthContext";
 import { toast } from "react-hot-toast";
+import "../components/editorStyles.css";
 
 function EditBlog() {
   const { user } = useAuth();
@@ -39,6 +35,7 @@ function EditBlog() {
     content: "<p>Loading blog...</p>",
   });
 
+  // ✅ Fetch existing blog content
   useEffect(() => {
     const fetchBlog = async () => {
       if (!editor || !id) return;
@@ -52,7 +49,6 @@ function EditBlog() {
             toast.error("You are not authorized to edit this blog.");
             return navigate("/");
           }
-
           setTitle(data.title);
           editor.commands.setContent(data.content);
         } else {
@@ -69,6 +65,7 @@ function EditBlog() {
     fetchBlog();
   }, [editor, id, user, navigate]);
 
+  // ✅ Handle image pasting
   useEffect(() => {
     if (!editor) return;
     const pasteHandler = handleImagePaste(editor, imgbbApiKey);
@@ -77,6 +74,7 @@ function EditBlog() {
     return () => el.removeEventListener("paste", pasteHandler);
   }, [editor, imgbbApiKey]);
 
+  // ✅ Submit updated blog
   const handleUpdate = async () => {
     if (!editor || !user) return;
 
@@ -90,11 +88,14 @@ function EditBlog() {
         title: title.trim(),
         content: html,
         updatedAt: serverTimestamp(),
-        status: "pending", // Re-review
+        status: "pending",
       });
 
       toast.success("✅ Blog updated for review!");
-      navigate(`/blog/${id}`);
+
+      // ✅ Avoid flushSync warning by deferring navigation
+      setTimeout(() => navigate(`/blog/${id}`), 0);
+
     } catch (err) {
       console.error("Error updating blog:", err);
       toast.error("Error saving blog.");
@@ -124,7 +125,6 @@ function EditBlog() {
       <div className="mb-4">
         <div className="flex flex-wrap gap-2 mb-2">
           <button onClick={() => editor.chain().focus().toggleBold().run()} className="btn">Bold</button>
-          <button onClick={() => editor.chain().focus().toggleItalic().run()} className="btn">Italic</button>
           <button onClick={() => editor.chain().focus().toggleUnderline().run()} className="btn">Underline</button>
           <button onClick={() => editor.chain().focus().toggleBulletList().run()} className="btn">• Bullet List</button>
           <button onClick={() => editor.chain().focus().setHeading({ level: 1 }).run()} className="btn">H1</button>
